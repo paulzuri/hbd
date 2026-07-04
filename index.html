@@ -1,29 +1,99 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
+
 <head>
+  <meta charset="UTF-8">
+  <title>wasaaaaaa 🐧💖🐔</title>
   <style>
     body {
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
       height: 100vh;
       margin: 0;
       padding: 20px;
       box-sizing: border-box;
+      text-align: center;
+      overflow: hidden;
     }
+
     img {
-      width: 80%;
-      height: 80%;
+      max-width: 90vw;
+      max-height: 65vh;
       object-fit: contain;
       flex-grow: 1;
+      min-height: 0;
+    }
+
+    h1 {
+      font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     }
   </style>
 </head>
+
 <body>
+
+  <h1>feliz cumpleaños pinwinito c:</h1>
   <img src="pinwinito.gif" alt="birthday gif">
-  <audio controls autoplay loop>
+  <br>
+  <audio id="bday-audio" controls loop>
     <source src="hbd.mp3" type="audio/mpeg">
   </audio>
+
+  <canvas id="confetti-canvas"
+    style="position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none;"></canvas>
+
+  <script>
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const colors = ['#e63946', '#f4a261', '#2a9d8f', '#e76f51', '#a8dadc', '#ffd166'];
+    let pieces = [];
+    let animId;
+
+    function launchConfetti() {
+      pieces = [];
+      for (let i = 0; i < 150; i++) {
+        pieces.push({
+          x: Math.random() * canvas.width,
+          y: -20 - Math.random() * canvas.height,
+          w: 6 + Math.random() * 4,
+          h: 10 + Math.random() * 6,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          speed: 2 + Math.random() * 3,
+          drift: Math.random() * 2 - 1,
+          angle: Math.random() * 360,
+          spin: Math.random() * 6 - 3
+        });
+      }
+      cancelAnimationFrame(animId);
+      animate();
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      let stillFalling = false;
+      for (const p of pieces) {
+        p.y += p.speed;
+        p.x += p.drift;
+        p.angle += p.spin;
+        if (p.y < canvas.height + 20) stillFalling = true;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.angle * Math.PI / 180);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        ctx.restore();
+      }
+      if (stillFalling) animId = requestAnimationFrame(animate);
+    }
+
+    const audio = document.getElementById('bday-audio');
+
+    audio.addEventListener('play', launchConfetti);
+  </script>
 </body>
+
 </html>
